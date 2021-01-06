@@ -21,6 +21,9 @@ RUN apk --update --no-cache add \
     libffi-dev \
     openssl-dev \
     make \
+    git \
+    less \
+    openssh \
     && \
     apk upgrade && \
     curl -fL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_64/docker-${DOCKER_VERSION}.tgz" | tar zx && \
@@ -28,6 +31,7 @@ RUN apk --update --no-cache add \
     python3 -m pip install --upgrade pip && \
     pip3 install docker-compose==${DOCKER_COMPOSE_VERSION} && \
     pip3 install docker-squash==${DOCKER_SQUASH} && \
+    rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/cache/apk/* && \
     rm -rf /root/.cache
 
