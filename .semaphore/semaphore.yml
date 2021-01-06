@@ -4,13 +4,29 @@ agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu1804
-
 blocks:
   - name: Build Container
     task:
       jobs:
-      - name: Docker Hub
-        commands:
-          - checkout
-          - docker build -t hello:v1 .
-          - docker run hello:v1
+        - name: Build & Run
+          commands:
+            - checkout
+            - 'docker build -t concourse-dcind:$SEMAPHORE_WORKFLOW_ID .'
+            - docker images
+            - 'docker run --privileged concourse-dcind:$SEMAPHORE_WORKFLOW_ID'
+  - name: Push Docker image to registry
+    task:
+      jobs:
+        - name: Docker Hub
+          commands:
+            - checkout
+            - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+            - docker images
+            - 'docker tag concourse-dcind:$SEMAPHORE_WORKFLOW_ID "$DOCKER_USERNAME"/concourse-dcind:$SEMAPHORE_WORKFLOW_ID'
+            - 'docker push "$DOCKER_USERNAME"/concourse-dcind:$SEMAPHORE_WORKFLOW_ID'
+            - 'docker pull "$DOCKER_USERNAME"/concourse-dcind:$SEMAPHORE_WORKFLOW_ID'
+            - docker images
+      secrets:
+        - name: docker-hub
+    skip:
+      when: branch != 'master'
