@@ -8,12 +8,14 @@ blocks:
   - name: Build Container
     task:
       jobs:
-        - name: Build & Run
+        - name: 'Build, Run & Publish'
           commands:
             - checkout
             - 'docker build -t concourse-dcind:$SEMAPHORE_WORKFLOW_ID .'
             - docker images
             - 'docker run --privileged concourse-dcind:$SEMAPHORE_WORKFLOW_ID'
+    skip:
+      when: branch = 'master'
   - name: Push Docker image to registry
     task:
       jobs:
@@ -21,7 +23,9 @@ blocks:
           commands:
             - checkout
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+            - 'docker build -t concourse-dcind:$SEMAPHORE_WORKFLOW_ID .'
             - docker images
+            - 'docker run --privileged concourse-dcind:$SEMAPHORE_WORKFLOW_ID'
             - 'docker tag concourse-dcind:$SEMAPHORE_WORKFLOW_ID "$DOCKER_USERNAME"/concourse-dcind:$SEMAPHORE_WORKFLOW_ID'
             - 'docker push "$DOCKER_USERNAME"/concourse-dcind:$SEMAPHORE_WORKFLOW_ID'
             - 'docker pull "$DOCKER_USERNAME"/concourse-dcind:$SEMAPHORE_WORKFLOW_ID'
