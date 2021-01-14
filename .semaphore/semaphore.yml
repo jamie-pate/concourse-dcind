@@ -5,10 +5,10 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Build Container
+  - name: Test Build Container
     task:
       jobs:
-        - name: 'Build, Run & Publish'
+        - name: Build & Run
           commands:
             - checkout
             - 'docker build -t concourse-dcind:$SEMAPHORE_WORKFLOW_ID .'
@@ -16,10 +16,11 @@ blocks:
             - 'docker run --privileged concourse-dcind:$SEMAPHORE_WORKFLOW_ID'
     skip:
       when: branch = 'master'
-  - name: Push Docker image to registry
+    dependencies: []
+  - name: Release Docker image
     task:
       jobs:
-        - name: Docker Hub
+        - name: 'Build, Run & Publish to Docker Hub'
           commands:
             - checkout
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
@@ -34,3 +35,4 @@ blocks:
         - name: docker-hub
     skip:
       when: branch != 'master'
+    dependencies: []
