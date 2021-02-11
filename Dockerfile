@@ -18,6 +18,7 @@ RUN apk --update --no-cache add \
     less \
     libc-dev \
     libffi-dev \
+    libressl-dev \
     make \
     musl-dev \
     openssh \
