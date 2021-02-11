@@ -8,25 +8,26 @@ ENV DOCKER_CHANNEL=stable \
 # Install Docker, Docker Compose, Docker Squash
 RUN apk --update --no-cache add \
     bash \
+    ca-certificates \
+    cargo \
     curl \
     device-mapper \
-    python3 \
-    py3-pip \
-    python3-dev \
-    iptables \
-    util-linux \
-    ca-certificates \
     gcc \
+    git \
+    iptables \
+    less \
     libc-dev \
     libffi-dev \
-    openssl-dev \
     make \
-    git \
-    less \
+    musl-dev \
     openssh \
+    openssl-dev \
+    py3-pip \
+    python3 \
+    python3-dev \
+    util-linux \
     && \
     apk upgrade && \
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -y | sh && \
     curl -fL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_64/docker-${DOCKER_VERSION}.tgz" | tar zx && \
     mv /docker/* /bin/ && chmod +x /bin/docker* && \
     python3 -m pip install --upgrade pip && \
