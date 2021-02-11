@@ -22,7 +22,6 @@ RUN apk --update --no-cache add \
     make \
     musl-dev \
     openssh \
-    openssl-dev \
     py3-pip \
     python3 \
     python3-dev \
