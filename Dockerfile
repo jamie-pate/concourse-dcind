@@ -26,7 +26,7 @@ RUN apk --update --no-cache add \
     openssh \
     && \
     apk upgrade && \
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh && \
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -y && \
     curl -fL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_64/docker-${DOCKER_VERSION}.tgz" | tar zx && \
     mv /docker/* /bin/ && chmod +x /bin/docker* && \
     python3 -m pip install --upgrade pip && \
